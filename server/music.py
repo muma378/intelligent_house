@@ -62,7 +62,7 @@ class songRequestWrapper():
 
     def compose_song_info(self, data):
         songs = []
-        for i in range(0, self.limit):
+        for i in range(0, len(data['result']['songs'])):
             song = data['result']['songs'][i]
             song_info = {
                'id': song['id'],
