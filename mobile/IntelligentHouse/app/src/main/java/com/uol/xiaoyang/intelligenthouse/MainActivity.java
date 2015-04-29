@@ -80,6 +80,20 @@ public class MainActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
+    public void addVoice(View view){
+        Intent intent = new Intent(this, AudioCapture.class);
+        startActivity(intent);
+
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+//        ListView list = (ListView)findViewById(R.id.lst_songlist);
+        new AsyncTaskParseJson().execute();
+    }
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
