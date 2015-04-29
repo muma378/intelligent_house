@@ -33,8 +33,9 @@ class songRequestWrapper():
         sys.setdefaultencoding('UTF-8')
 
     def query(self, q, offset=0):
-        song_name = "".join(q.split())
-        if song_name is None:
+        #song_name = "".join(q.split())
+        song_name = q
+	if song_name is None:
             print "no characters in q"
 
         data = {
@@ -53,15 +54,16 @@ class songRequestWrapper():
             cookies=self.cookies,
             headers=self.header
         )
-
         song.encoding = 'UTF-8'
         song = json.loads(song.text)
         query_result = self.compose_song_info(song)
-        return query_result
+	return query_result
 
 
     def compose_song_info(self, data):
         songs = []
+	if data['result']['songCount'] == 0:
+	    return {"results": [], "status": 201}
         for i in range(0, len(data['result']['songs'])):
             song = data['result']['songs'][i]
             song_info = {
@@ -73,4 +75,5 @@ class songRequestWrapper():
                'url': song['mp3Url'],
                }
             songs.append(song_info)
-        return songs
+	results = {"results": songs, "status": 200}
+        return results

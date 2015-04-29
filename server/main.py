@@ -18,7 +18,7 @@ class queryRequestHandler(tornado.web.RequestHandler):
         offset = self.get_argument("offset")
         if query is None:
             self.write("Please specify the name to query")
-        records = _song_requester.query(query, offset)
+	records = _song_requester.query(query, offset)
         self.write(tornado.escape.json_encode(records))
 
 class songsRequestHandler(tornado.web.RequestHandler):
@@ -56,10 +56,11 @@ class songsRequestHandler(tornado.web.RequestHandler):
 
         records = []
         for row in _cursor:
-            print row
             records = records + [{'id':row[0], 'name':row[5], 'artist':row[6], 'album':row[7],
             'duration':row[8], 'url':row[9]}]
-        self.write(tornado.escape.json_encode(records))
+        print "Respond with " + str(len(records)) + " records" 
+	records = {"results": records}
+	self.write(tornado.escape.json_encode(records))
 
     def put(self, song_id):
         '''
@@ -94,7 +95,8 @@ class songsRequestHandler(tornado.web.RequestHandler):
         _cursor.execute(sql_list)
         _db.commit()
 
-        self.write("Save successfully")
+	response = {"status":200, "message": "ok"}
+	self.write(tornado.escape.json_encode(response))
         
     def delete(self, list_id):
         '''
@@ -105,7 +107,8 @@ class songsRequestHandler(tornado.web.RequestHandler):
         '''.format(list_table=self.list_table, list_id=list_id)
         _cursor.execute(sql_remove)
         _db.commit()
-        self.write("Remove the song from the list")
+	response = {"status":200, "message": "ok"}
+	self.write(tornado.escape.json_encode(response))
 
     def post(self, list_id):
         '''
@@ -117,7 +120,8 @@ class songsRequestHandler(tornado.web.RequestHandler):
         _cursor.execute(sql_update)
         _db.commit()
 
-        self.write("Update successfully.")
+	response = {"status":200, "message": "ok"}
+	self.write(tornado.escape.json_encode(response))
 
 
 application = tornado.web.Application([
