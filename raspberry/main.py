@@ -16,6 +16,7 @@ SONGS_INFO = []
 
 COUNTER = 0
 PLAY = False
+LIMIT = 3
 
 _db = sqlite3.connect('local_list.db')
 _cursor = _db.cursor()
@@ -27,13 +28,15 @@ def initialize():
     _cursor.execute(sql_init)
 
 def play_music(PIR_PIN):
-    if COUNTER < 15:
+    global COUNTER
+    if COUNTER < 1:
         print(COUNTER)
 	COUNTER += 1
     else:
 	COUNTER = 0
         PLAY = True
-        GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=stop_music)
+        #GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=stop_music)
+	refresh_database()
 	subprocess.call(compose_cmd(), shell=True)
 
 def stop_music():
@@ -42,13 +45,16 @@ def stop_music():
     
 
 def compose_cmd():
+    global SONGS_INFO
     cmd = "mplayer "
-    for song in SONGS_INFO:
+    for song in SONGS_INFO["results"]:
         cmd = cmd + song['url'] + ' '
     cmd += '-loop 2'
+    print cmd
     return cmd 
 
 def refresh_database():
+    global SONGS_INFO
     results = requests.get(SERVER+LIST_URL, verify=False)
     SONGS_INFO = json.loads(results.text)	
     print SONGS_INFO
@@ -57,7 +63,6 @@ def refresh_database():
 
 if __name__ == "__main__":
     initialize()
-    refresh_database()
     try:
         GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=play_music)
         while True:
