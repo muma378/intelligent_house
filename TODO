@@ -3,14 +3,14 @@
 
 # server
 1. add function for voicing
-	1.1. add interfaces for uploading voices (high)
+	#1.1. add interfaces for uploading voices (high)
 	1.2. add tables or fields for uploading voices (high)
-	1.3. add interfaces for loading/downloading voices (high)
+	#1.3. add interfaces for loading/downloading voices (high)
 2. add tables for uploading history (low)
 
 # mobile
 1. add function for voicing
-	1.1 add graphic interfaces for uploading voices (high)
+	#1.1 add graphic interfaces for uploading voices (high)
 2. add function for manipulating playlist
 	2.1 remove songs from playlist (mid)
 	2.2 renew songs in playlists (mid)

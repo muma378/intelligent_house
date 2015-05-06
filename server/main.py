@@ -5,6 +5,7 @@ import tornado.escape
 import sqlite3
 import sys
 import time
+import base64
 
 from music import songRequestWrapper
 
@@ -26,8 +27,8 @@ class songsRequestHandler(tornado.web.RequestHandler):
         '''
         initialize the database
         '''
-        self.songs_table = "songs"
-        self.list_table = "list"
+        self.songs_table = settings["songs_table"]
+        self.list_table = settings["list_table"]
         _cursor.execute('''
             CREATE TABLE IF NOT EXISTS {0} (id INTEGER PRIMARY KEY AUTOINCREMENT,
             song_id REAL UNIQUE, name TEXT, artist TEXT, album TEXT, 
@@ -88,7 +89,6 @@ class songsRequestHandler(tornado.web.RequestHandler):
         else:
             id = id[0]
         
-
         sql_list = '''
             INSERT INTO {list_table} VALUES (NULL, {fk_id}, {update_time})
         '''.format(list_table=self.list_table, fk_id=id, update_time=time.time())
@@ -123,12 +123,78 @@ class songsRequestHandler(tornado.web.RequestHandler):
 	response = {"status":200, "message": "ok"}
 	self.write(tornado.escape.json_encode(response))
 
+class uploadRecordsHandler(tornado.web.RequestHandler):
+    def initialize(self):
+	self.static_path = settings["static_path"]
+	self.server = settings["host"] + ":" + str(settings["port"])
+
+        self.songs_table = settings["songs_table"]
+	self.list_table = settings["list_table"]
+
+    def put(self, record_id):
+	record = self.get_argument("data")
+	name = self.get_argument("name", default=time.time())
+    	
+	if not name.endswith(settings["record_format"]):
+	    name += settings["record_format"]    
+	file_path = self.static_path + '/' + name
+	try:
+	    record = base64.b64decode(record)
+	    with open(file_path, 'wb') as out:
+                out.write(record)
+        except IOError as e:
+	    print e
+            response = {"status": 404, "message": "commit failed"}
+	    return response
+	
+	file_url = self.server + '/'  + file_path
+	print file_url
+        record_id = int(divmod(time.time(), 10000)[1])
+	try:
+	    self.insert_records(record_id, name, file_url)
+	except IOError as e:
+	    print e
+        response = {"status": 200, "message": "ok"}
+	self.write(tornado.escape.json_encode(response))
+
+    def insert_records(self, record_id, name, file_url):
+	sql_insert_songs = '''
+            INSERT INTO {songs_table} VALUES (NULL, {record_id}, '{name}', 'user', 
+            'records', {duration}, '{url}')
+        '''.format(songs_table=self.songs_table, record_id=record_id, name=name, 
+         duration=5000, url=file_url)
+	_cursor.execute(sql_insert_songs)
+	_db.commit()
+	
+	sql_query_id ='''
+            SELECT id FROM {songs_table} WHERE song_id = {record_id}
+        '''.format(songs_table=self.songs_table, record_id=record_id)
+
+        _cursor.execute(sql_query_id)
+        id = _cursor.fetchone()[0]
+
+    	sql_insert_list = '''
+            INSERT INTO {list_table} VALUES (NULL, {fk_id}, {update_time})
+        '''.format(list_table=self.list_table, fk_id=id, update_time=time.time())
+        _cursor.execute(sql_insert_list)
+        _db.commit()
+	return True	
+
+settings = {
+    "static_path": "static/records",
+    "port": 8085,
+    "host": "http://178.62.91.44",
+    "record_format": ".3gp",
+    "list_table": "list",
+    "songs_table": "songs",
+}
 
 application = tornado.web.Application([
     (r'/songs/q', queryRequestHandler),
     (r'/songs/all', songsRequestHandler),
     (r'/song/([\d]+)', songsRequestHandler),
-    # (r'/static/(.*)', tornado.web.StaticFileHandler, {'path':'static'}),
+    (r'/record/([\d]+)', uploadRecordsHandler),
+    (r'/static/(.*)', tornado.web.StaticFileHandler, {'path':'static'}),
 ])
 
 if __name__ == '__main__':
@@ -137,5 +203,5 @@ if __name__ == '__main__':
     #    "keyfile": "keys/key.pem",
     #})
     http_server = tornado.httpserver.HTTPServer(application)
-    http_server.listen(8085)
+    http_server.listen(settings["port"])
     tornado.ioloop.IOLoop.instance().start()
