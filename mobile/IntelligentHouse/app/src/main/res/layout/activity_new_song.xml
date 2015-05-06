@@ -16,7 +16,6 @@
         android:text="Search songs here"
         android:typeface="monospace"
         android:fontFamily="@string/abc_searchview_description_clear"
-        android:focusable="true"
         android:autoText="false"
         android:textStyle="italic"
         android:onClick="removeText" />
