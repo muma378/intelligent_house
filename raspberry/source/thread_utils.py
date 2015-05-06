@@ -40,7 +40,7 @@ class ThreadPlayer(threading.Thread):
 		while song_index < self.length and self._play_next:
 			song = self.playlist[song_index]
 			logger.info("Begin to play " + song["name"] + " by " + song["artist"])
-			cmd = "mplayer " + song["url"]
+			cmd = "mplayer \"" + song["url"] + "\""
 			subprocess.call(cmd, shell=True)  # call the command mplayer url in the shell
 			song_index += 1
 		logger.info("Play to end.")
