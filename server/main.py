@@ -149,20 +149,20 @@ class uploadRecordsHandler(tornado.web.RequestHandler):
 	
 	file_url = self.server + '/'  + file_path
 	print file_url
-        record_id = int(divmod(time.time(), 10000)[1])
+        record_id = int(divmod(time.time(), 1000000)[1])
 	try:
-	    self.insert_records(record_id, name, file_url)
+	    self.insert_records(record_id, name, file_url, self.get_argument("duration"))
 	except IOError as e:
 	    print e
         response = {"status": 200, "message": "ok"}
 	self.write(tornado.escape.json_encode(response))
 
-    def insert_records(self, record_id, name, file_url):
+    def insert_records(self, record_id, name, file_url, duration):
 	sql_insert_songs = '''
-            INSERT INTO {songs_table} VALUES (NULL, {record_id}, '{name}', 'user', 
-            'records', {duration}, '{url}')
+            INSERT INTO {songs_table} VALUES (NULL, {record_id}, '{name}', 'User', 
+            'Records', {duration}, '{url}')
         '''.format(songs_table=self.songs_table, record_id=record_id, name=name, 
-         duration=5000, url=file_url)
+         duration=long(duration), url=file_url)
 	_cursor.execute(sql_insert_songs)
 	_db.commit()
 	
