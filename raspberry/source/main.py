@@ -3,8 +3,6 @@ import time
 import requests
 import json
 import subprocess
-import logging
-import logging.config
 
 import settings
 from thread_utils import ThreadPlayer, ThreadTimer

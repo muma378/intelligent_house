@@ -5,8 +5,8 @@ import logging.config
 # about preferences
 gpio_pin = 4  # sensor's pin for GPIO
 occlusion_time = 3 # time for occlusion detected
-play_length = 5  # minutes to play
-stationarity_length = 1  # minutes for house to keep stationarity
+play_length = -1  # minutes to play
+stationarity_length = 5  # minutes for house to keep stationarity
 leaps = 5  #seconds for timer to check bounds every leaps
 
 # about websites

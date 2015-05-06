@@ -100,7 +100,6 @@ class ThreadTimer(threading.Thread):
 		while self.elapse < self.bound:
 			time.sleep(self.gap)
 			self.elapse += self.gap
-			print self.elapse
 		logger.info("Time up")
 		self.player.stop_play()
 		self.over = True
