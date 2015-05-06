@@ -36,11 +36,10 @@ public class AudioCapture extends ActionBarActivity {
     private Button button_record;
     private MediaRecorder media_recorder;
     private LinearLayout linear_layout_record;
-    private Button button_add;
-    private Button button_cancel;
 
     private boolean recording = false;
     private static String audio_file = null;
+    private long record_duration = 0;
 
     public AudioCapture() {
         audio_file = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -56,8 +55,6 @@ public class AudioCapture extends ActionBarActivity {
         button_record = (Button)findViewById(R.id.btn_record);
 
         linear_layout_record = (LinearLayout) findViewById(R.id.layout_add_record);
-        button_add = (Button) findViewById(R.id.btn_add);
-        button_cancel = (Button) findViewById(R.id.btn_cancel);
 
     }
 
@@ -100,6 +97,7 @@ public class AudioCapture extends ActionBarActivity {
         button_record.setText(STATUS_IDLE);
         //stop timer
         chronometer.stop();
+        record_duration = SystemClock.elapsedRealtime() - chronometer.getBase();
 
         //stop recording
         media_recorder.stop();
@@ -152,9 +150,11 @@ public class AudioCapture extends ActionBarActivity {
                 String record = Base64.encodeToString(bytes, 0);
                 Date name = new Date();
 
+
                 String parameters = "/1";
                 parameters += "?data=" + URLEncoder.encode(record, E);
                 parameters += "&name=" + URLEncoder.encode(name.toString(), E);
+                parameters += "&duration=" + URLEncoder.encode(Long.toString(record_duration), E);
                 put_url = PutRecordSite + parameters;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -180,7 +180,7 @@ public class AudioCapture extends ActionBarActivity {
         @Override
         protected void onPostExecute(String strFromDoInBg){
             if (success){
-                //show dialog to alert sucsess
+                // TODO: show dialog to alert success or fail
             }else{
 
             }

@@ -50,7 +50,33 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:onClick="addList"
-        android:clickable="true" />
+        android:clickable="true"
+        android:visibility="visible"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:id="@+id/layout_up_remove"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/up_song"
+            android:src="@drawable/up"
+            android:onClick="appendSong"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/remove_song"
+            android:src="@drawable/remove"
+            android:onClick="removeSong"
+            />
+    </LinearLayout>
+
 
 
 </RelativeLayout>

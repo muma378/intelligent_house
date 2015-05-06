@@ -53,6 +53,36 @@ public class JsonParser {
 
     }
 
+    public JSONObject getJSONFromPost(String url){
+        try {
+            //create new HTTP client for a get post
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(url);
+
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            JSONObject jObj = processResponse(httpResponse);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return jObj;
+
+    }
+
+    public JSONObject getJSONFromDelete(String url){
+        try {
+            //create new HTTP client for a get post
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpDelete httpDelete = new HttpDelete(url);
+
+            HttpResponse httpResponse = httpClient.execute(httpDelete);
+            JSONObject jObj = processResponse(httpResponse);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return jObj;
+
+    }
+
     public JSONObject processResponse(HttpResponse httpResponse){
         try{
             HttpEntity httpEntity = httpResponse.getEntity();

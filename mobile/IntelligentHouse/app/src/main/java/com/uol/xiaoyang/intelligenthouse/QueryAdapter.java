@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.util.Date;
 import java.util.ArrayList;
@@ -20,10 +21,12 @@ public class QueryAdapter extends BaseAdapter {
     private ArrayList<HashMap<String, String>> data;
     private static LayoutInflater inflater=null;
     private static int counter = 0;
+    private String page;
 
-    public QueryAdapter(NewSong a, ArrayList<HashMap<String, String>> d) {
+    public QueryAdapter(Activity a, ArrayList<HashMap<String, String>> d, String p) {
         activity = a;
-        data=d;
+        data = d;
+        page = p;
         inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -53,6 +56,11 @@ public class QueryAdapter extends BaseAdapter {
         TextView duration = (TextView)vi.findViewById(R.id.duration); // duration
         ImageView add = (ImageView)vi.findViewById(R.id.add);   //add symbol
 
+        LinearLayout refresh = (LinearLayout) vi.findViewById(R.id.layout_up_remove);  //replace the add image view at main page
+        ImageView append = (ImageView) vi.findViewById(R.id.up_song);
+        ImageView remove = (ImageView) vi.findViewById(R.id.remove_song);
+
+
         HashMap<String, String> song = new HashMap<String, String>();
         song = data.get(position);
 
@@ -67,7 +75,19 @@ public class QueryAdapter extends BaseAdapter {
 
         ViewHolder viewHolder = new ViewHolder();
         viewHolder.data = (HashMap<String, String>)song.clone();
-        add.setTag(viewHolder);
+
+        if(page.equals(MainActivity.PAGE)){
+            refresh.setVisibility(View.VISIBLE);
+            add.setVisibility(View.GONE);
+            append.setTag(viewHolder);
+            remove.setTag(viewHolder);
+        }else {
+            if (page.equals(NewSong.PAGE)){
+                refresh.setVisibility(View.GONE);
+                add.setVisibility(View.VISIBLE);
+                add.setTag(viewHolder);
+            }
+        }
 
         return vi;
     }

@@ -26,8 +26,8 @@ import android.util.Log;
 public class NewSong extends ActionBarActivity {
 
     final String TAG = "NewSong.java";
-
-    // XML node keys
+    public static final String PAGE = "NewSong";
+    // json node keys
     static final String KEY_ID = "id";  //song_id
     static final String KEY_NAME = "name";
     static final String KEY_DESCRIPTION = "description";   //artist - album
@@ -162,7 +162,7 @@ public class NewSong extends ActionBarActivity {
             ListView list = (ListView)findViewById(R.id.list_result);
 
             // Getting adapter by passing xml data ArrayList
-            QueryAdapter adapter=new QueryAdapter(NewSong.this, songsList);
+            QueryAdapter adapter=new QueryAdapter(NewSong.this, songsList, PAGE);
             list.setAdapter(adapter);
 
             // Click event for single list row
