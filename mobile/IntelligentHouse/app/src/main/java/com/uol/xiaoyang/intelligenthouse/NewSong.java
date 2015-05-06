@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,8 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.util.Log;
-
-import static java.net.URLEncoder.*;
 
 
 public class NewSong extends ActionBarActivity {
@@ -59,9 +56,9 @@ public class NewSong extends ActionBarActivity {
     public void addList(View view){
         QueryAdapter.ViewHolder viewHolder = (QueryAdapter.ViewHolder) view.getTag();
         song_info = viewHolder.data;
-        AsyncTaskAddList asynAddList = new AsyncTaskAddList();
-        asynAddList.target = (ImageView) view;
-        asynAddList.execute();
+        AsyncTaskAddList asyncAddList = new AsyncTaskAddList();
+        asyncAddList.target = (ImageView) view;
+        asyncAddList.execute();
     }
 
     public class AsyncTaskAddList extends AsyncTask<String, String, String>{
